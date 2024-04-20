@@ -1,7 +1,7 @@
 # System aliases
 alias c="clear"
 alias cd="z"
-alias /="cd ~/"
+alias ~="cd ~/"
 alias .="cd ../"
 alias ..="cd ../../"
 alias ...="cd ../../../"
@@ -15,7 +15,7 @@ alias bsl="brew services list"
 
 # ZSH aliases
 alias aliases="vi ~/.aliases && source ~/.zshrc"
-alias zsh="vi ~/.zshrc && source ~/.zshrc"
+alias zshrc="vi ~/.zshrc && source ~/.zshrc"
 alias omzsh="vi ~/.oh-my-zsh"
 
 # LSD aliases
