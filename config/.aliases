@@ -6,8 +6,6 @@ alias .="cd ../"
 alias ..="cd ../../"
 alias ...="cd ../../../"
 alias ....="cd ../../../../"
-alias vi="vim"
-alias work="cd ~/Projects/Praella"
 alias cpf="copyfile"
 alias cpp="copypath"
 
@@ -22,11 +20,8 @@ alias omzsh="vi ~/.oh-my-zsh"
 
 # LSD aliases
 alias ls='lsd'
-alias l='lsd --long'
-alias la='lsd --almost-all --long'
-alias llm='lsd --timesort --long'
-alias lS='lsd --oneline --classic'
-alias lt='lsd --tree --depth=2'
+alias l="lsd -lhrtF" 
+alias la='lsd -lAhrtF'
 
 # Composer aliases
 alias ccp="composer create-project"
@@ -40,3 +35,12 @@ alias cu="composer update"
 alias crm="composer remove"
 alias cgrm="composer global remove"
 alias cgu="composer global update"
+
+# Functions
+cheat() {
+    if [ "$2" ]; then
+        curl "https://cheat.sh/$1/$2+$3+$4+$5+$6+$7+$8+$9+$10"
+    else
+        curl "https://cheat.sh/$1"
+    fi
+}
