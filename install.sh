@@ -27,8 +27,15 @@ do
         echo "$application is already installed\n"
     else
         brew install --cask "$application"
+        
+        if [ "${applications[i]}" = "visual-studio-code" ]; then
+            export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+        fi
+
+        echo "$application installed\n"
     fi 
 done
+
 
 # Install all fonts if not installed
 if brew tap | grep -q "homebrew/cask-fonts"; then
@@ -106,6 +113,38 @@ if [ -d ~/.config/shazam/oh-my-zsh/custom/themes/powerlevel10k ]; then
     cd ~/.config/shazam/oh-my-zsh/custom/themes/powerlevel10k && git pull
 else
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.config/shazam/oh-my-zsh/custom/themes/powerlevel10k
+fi
+
+# Get extensions file
+extensions_file="vscode/.extensions"
+
+# Function to check if an extension is installed
+extension_installed() {
+    local extension="$1"
+    code --list-extensions | grep -q "$1" && return 0 || return 1
+}
+
+# Install extensions listed in the extensions file
+while IFS= read -r extension || [[ -n "$extension" ]]; do
+    if extension_installed "$extension"; then
+        echo "Extension '$extension' is already installed."
+    else
+        echo "Installing extension: $extension"
+        code --install-extension "$extension"
+    fi
+done < "$extensions_file"
+
+# Path to custom settings.json file
+custom_settings_file="vscode/settings.json"
+
+# Path to VS Code settings directory
+vscode_settings_dir="$HOME/Library/Application Support/Code/User"
+
+# Check if VS Code settings directory exists and copy settings if it does
+if [ ! -d "$vscode_settings_dir" ]; then
+    echo "Error: VS Code settings directory does not exist: $vscode_settings_dir"
+else
+    cp "$custom_settings_file" "$vscode_settings_dir/settings.json"
 fi
 
 if chsh -s $(which zsh) && /bin/zsh -i -c 'omz update'; then
