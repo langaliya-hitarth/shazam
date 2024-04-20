@@ -5,6 +5,14 @@ declare -a packages=("git" "zsh" "wget" "php" "mysql" "node" "nvm" "composer" "l
 declare -a applications=("google-chrome" "visual-studio-code" "warp" "raycast" "notion" "todoist" "postman" "dbeaver" "spotify")
 declare -a fonts=("font-jetbrains-mono" "font-meslo-lg-nerd-font")
 
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+    echo "Homebrew is not installed. Installing..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+    echo "Homebrew is already installed."
+fi
+
 # Install all packages if not installed
 for package in "${packages[@]}"
 do
