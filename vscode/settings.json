@@ -1,0 +1,16 @@
+{
+    "workbench.colorTheme": "Palenight (Mild Contrast)",
+    "workbench.sideBar.location": "right",
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontSize": 16,
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.fontFamily": "'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "workbench.list.smoothScrolling": true,
+    "terminal.integrated.smoothScrolling": true,
+    "editor.smoothScrolling": true,
+    "terminal.integrated.gpuAcceleration": "canvas",
+    "terminal.integrated.lineHeight": 1.3,
+    "terminal.integrated.fontFamily": "MesloLGS NF" 
+}

@@ -1,0 +1,42 @@
+# System aliases
+alias c="clear"
+alias cd="z"
+alias /="cd ~/"
+alias .="cd ../"
+alias ..="cd ../../"
+alias ...="cd ../../../"
+alias ....="cd ../../../../"
+alias vi="vim"
+alias work="cd ~/Projects/Praella"
+alias cpf="copyfile"
+alias cpp="copypath"
+
+# Brew aliases
+alias bi="brew install"
+alias bsl="brew services list"
+
+# ZSH aliases
+alias aliases="vi ~/.aliases && source ~/.zshrc"
+alias zsh="vi ~/.zshrc && source ~/.zshrc"
+alias omzsh="vi ~/.oh-my-zsh"
+
+# LSD aliases
+alias ls='lsd'
+alias l='lsd --long'
+alias la='lsd --almost-all --long'
+alias llm='lsd --timesort --long'
+alias lS='lsd --oneline --classic'
+alias lt='lsd --tree --depth=2'
+
+# Composer aliases
+alias ccp="composer create-project"
+alias new-laravel="ccp laravel/laravel"
+alias ci="composer install"
+alias cr="composer require"
+alias cgr="composer global require"
+alias cs="composer show"
+alias co="composer outdated"
+alias cu="composer update"
+alias crm="composer remove"
+alias cgrm="composer global remove"
+alias cgu="composer global update"
