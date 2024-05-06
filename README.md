@@ -18,40 +18,41 @@ Shazam! is a bash script designed to automate the setup of your development envi
 
 1. Clone this repository:
 
-```bash
-git clone https://github.com/yourusername/Shazam.git
-```
+    ```bash
+    git clone https://github.com/yourusername/Shazam.git
+    ```
 
-## Navigate to the project directory:
+2. Navigate to the project directory:
 
-1. Copy code
+    ```bash
+    cd Shazam
+    ```
 
-```bash
-cd Shazam
-```
+3. Run the setup script:
 
-2. Run the setup script:
-```bash
-./shazam.sh
-```
+    ```bash
+    ./shazam.sh
+    ```
 
-3. Follow the on-screen prompts for any additional setup steps.
+    Follow the on-screen prompts for any additional setup steps.
 
 ## Requirements
-1. macOS
-2. Homebrew
-3. Git (Installed by default on macOS)
-4. Internet connection (for downloading packages and applications)
+
+- macOS
+- [Homebrew](https://brew.sh/)
+- Git (Installed by default on macOS)
+- Internet connection (for downloading packages and applications)
 
 ## Configuration
+
 The script can be configured by editing the following arrays:
 
-packages: List of essential packages to install.
-applications: List of applications to install via Homebrew Cask.
-fonts: List of fonts to install via Homebrew Cask Fonts.
-Additionally, you can customize VS Code extensions by editing the .extensions file and VS Code settings by modifying the settings.json file in the vscode directory.
+- `packages`: List of essential packages to install.
+- `applications`: List of applications to install via Homebrew Cask.
+- `fonts`: List of fonts to install via Homebrew Cask Fonts.
+
+Additionally, you can customize VS Code extensions by editing the `.extensions` file and VS Code settings by modifying the `settings.json` file in the `vscode` directory.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
 
-Feel free to adjust it as needed!
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
