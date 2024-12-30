@@ -9,12 +9,17 @@ exec 2>/dev/null
 #Get project directory
 project_dir="$(pwd)"
 
-declare -a packages=("git" "zsh" "wget" "php" "mysql" "node" "nvm" "composer" "lsd" "postgresql@13")
-declare -a applications=("google-chrome" "visual-studio-code" "warp" "raycast" "notion" "todoist" "postman" "dbeaver-community" "spotify")
+declare -a packages=("git" "zsh" "wget" "php" "mysql" "node" "nvm" "composer" "lsd" "postgresql@15")
+declare -a applications=("google-chrome" "visual-studio-code" "warp" "raycast" "notion" "todoist" "postman" "dbeaver-community" "spotify" "betterdisplay" "slack")
 declare -a fonts=("font-jetbrains-mono" "font-meslo-lg-nerd-font")
+declare -a npm-packages=("@shopify/cli@latest" "@nestjs/cli")
 
 echo_message() {
-    echo -e "\n$1\n"
+    BOLD='\033[1;90m'
+    PURPLE='\033[0;34m' # Oh-My-Zsh color
+    NC='\033[0m' # No Color
+
+    echo -e "${BOLD}${PURPLE}\n$1${NC}\n"
 }
 
 # Check and install Homebrew
@@ -30,7 +35,7 @@ fi
 for package in "${packages[@]}"; do
     if ! brew list --formula | grep -q "^$package\$"; then
         echo_message "Installing $package..."
-        brew install "$package" || { echo "Could not install packages" && exit; }
+        brew install "$package" || { echo_message "Warning: Could not install $package" && exit; }
         echo_message "$package installed."
     else
         echo_message "$package is already installed."
@@ -38,10 +43,11 @@ for package in "${packages[@]}"; do
 done
 
 # Install applications
+echo_message "Initiating Application Installation"
 for application in "${applications[@]}"; do
     cask_info=$(brew info --cask "$application" 2>/dev/null)
     application_name=$(echo "$cask_info" | awk '/Artifacts/{getline; sub(/ \(App\)/,""); sub(/^ */,""); print}')
-    if [ -z "$application_name" ] && ! brew list --cask "$application" &>/dev/null; then
+    if [ ! -d "/Applications/$application_name" ] && ! brew list --cask "$application" &>/dev/null; then
         brew install --cask "$application"
         [ "$application" = "visual-studio-code" ] && export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
         echo_message "$application_name installed."
@@ -56,6 +62,7 @@ if ! brew tap | grep -q "homebrew/cask-fonts"; then
 fi
 
 # Install fonts
+echo_message "Intiating Font Installation"
 for font in "${fonts[@]}"; do
     if ! brew list --cask | grep -q "^$font\$"; then
         brew install --cask "$font"
@@ -181,7 +188,7 @@ fi
 if /bin/zsh -c 'source ~/.zshrc && omz update'; then
     echo_message "\nInstallation Complete!"
 else
-    echo_message "\nSomething went wrong."
+    echo_message "\nWarning: Something went wrong."
 fi
 
 exit

@@ -1,0 +1,100 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "breadcrumbs.icons": true,
+  "workbench.colorTheme": "Halcyon",
+  "workbench.sideBar.location": "right",
+  "editor.fontSize": 16,
+  "editor.fontFamily": "'JetBrains Mono', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.wordWrap": "on",
+  "editor.tabSize": 2,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "workbench.list.smoothScrolling": true,
+  "editor.smoothScrolling": true,
+  "terminal.integrated.smoothScrolling": true,
+  "editor.cursorBlinking": "smooth",
+  "animations.Install-Method": "Custom CSS and JS",
+  "vscode_custom_css.imports": [
+    "file:///Users/hitarth/.vscode/extensions/brandonkirbyson.vscode-animations-2.0.4/dist/updateHandler.js"
+  ],
+  "terminal.integrated.fontSize": 16,
+  "terminal.integrated.fontFamily": "'JetBrains Mono', 'MesloLGS NF', Monaco, 'Courier New', monospace",
+  "editor.minimap.enabled": false,
+  "laravel-pint.enable": true,
+  "editor.formatOnSave": true,
+  "Devdb.colorTheme": "dark",
+  "cSpell.userWords": [
+    "autoincrement",
+    "codegen",
+    "emojify",
+    "gelly",
+    "myshopify",
+    "ngrok",
+    "nodenext",
+    "rollbar",
+    "tseslint",
+    "vite"
+  ],
+  "editor.wordWrapColumn": 120,
+  "window.zoomLevel": 1,
+  "terminal.external.osxExec": "Warp.app",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "git.autofetch": true,
+  "remote.SSH.configFile": "~/.ssh/ssh_config",
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "oracledevtools.connectionConfiguration.configFilesFolder": "/Users/hitarth/Oracle/network/admin",
+  "[oraclesql]": {
+    "editor.suggest.showSnippets": true,
+    "editor.quickSuggestions": {
+      "comments": "on",
+      "strings": "on",
+      "other": "on"
+    }
+  },
+  "emmet.syntaxProfiles": {},
+  "files.associations": {
+    "*.ndjson": "jsonl",
+    "*.dbclient-js": "javascript",
+    ".env*": "dotenv",
+    ".scafflater": "jsonc"
+  },
+  "editor.tokenColorCustomizations": {
+    "[*Light*]": {
+      "textMateRules": [
+        {
+          "scope": "ref.matchtext",
+          "settings": {
+            "foreground": "#000"
+          }
+        }
+      ]
+    },
+    "[*Dark*]": {
+      "textMateRules": [
+        {
+          "scope": "ref.matchtext",
+          "settings": {
+            "foreground": "#fff"
+          }
+        }
+      ]
+    },
+    "textMateRules": []
+  },
+  "dotenv.enableAutocloaking": false,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "sqldeveloper.telemetry.enabled": true,
+  "sqldeveloper.sqlHistory.historyLimit": 500,
+  "database-client.autoSync": true,
+  "errorLens.enabledDiagnosticLevels": ["error", "warning"]
+}
