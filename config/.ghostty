@@ -1,0 +1,52 @@
+# shell
+shell-integration = zsh
+shell-integration-features = no-cursor,sudo,no-title
+
+# window
+window-padding-balance = true 
+window-save-state = always
+window-colorspace = "display-p3"
+window-theme = dark
+window-height = 120
+window-width = 120
+window-colorspace = display-p3
+macos-titlebar-style = tabs
+adjust-cell-height = 35%
+
+# clipboard
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+
+# mouse
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 2
+
+# aesthetics
+background-blur-radius = 10
+theme = Everblush
+bold-is-bright = true
+background = #141b1e
+foreground = #dadada
+selection-background = #141b1e
+selection-foreground = #dadada
+cursor-color = #dadada
+cursor-style-blink = false
+palette = 0=#232a2d
+palette = 1=#e57474
+palette = 2=#8ccf7e
+palette = 3=#e5c76b
+palette = 4=#67b0e8
+palette = 5=#c47fd5
+palette = 6=#6cbfbf
+palette = 7=#b3b9b8
+palette = 8=#2d3437
+palette = 9=#ef7e7e
+palette = 10=#96d988
+palette = 11=#f4d67a
+palette = 12=#71baf2
+palette = 13=#ce89df
+palette = 14=#67cbe7
+palette = 15=#bdc3c2
+font-size = 20
+
