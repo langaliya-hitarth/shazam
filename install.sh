@@ -32,6 +32,17 @@ SHAZAM_SUCCESS=""
 SHAZAM_SUDO=0
 MACOS=1
 
+# Color definitions
+readonly COLOR_RESET='\033[0m'
+readonly COLOR_RED='\033[0;31m'
+readonly COLOR_GREEN='\033[0;32m'
+readonly COLOR_YELLOW='\033[0;33m'
+readonly COLOR_BLUE='\033[0;34m'
+readonly COLOR_PURPLE='\033[0;35m'
+readonly COLOR_CYAN='\033[0;36m'
+readonly COLOR_WHITE='\033[0;37m'
+readonly COLOR_BOLD='\033[1m'
+
 sudo_askpass() {
     if [ -n "$SUDO_ASKPASS" ]; then
         sudo --askpass "$@"
@@ -43,17 +54,18 @@ sudo_askpass() {
 cleanup() {
     set +e
     if [ -n "$SUDO_ASKPASS" ]; then
+        log "Cleaning up temporary sudo access files..."
         sudo_askpass rm -rf "$CLT_PLACEHOLDER" "$SUDO_ASKPASS" "$SUDO_ASKPASS_DIR"
         sudo --reset-timestamp
     fi
     if [ -z "$SHAZAM_SUCCESS" ]; then
         if [ -n "$SHAZAM_STEP" ]; then
-            echo "!!! $SHAZAM_STEP FAILED" >&2
+            logerr "Process failed during step: $SHAZAM_STEP"
         else
-            echo "!!! FAILED" >&2
+            logerr "Installation process failed"
         fi
         if [ "$SHAZAM_DEBUG" -eq 0 ]; then
-            echo "!!! Run '$0 --debug' for debugging output." >&2
+            logwarn "For detailed error information, please run the script with '--debug' flag"
         fi
     fi
 }
@@ -88,23 +100,57 @@ escape() {
 
 log_no_sudo() {
     SHAZAM_STEP="$*"
-    echo "--> $*"
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -e "${COLOR_CYAN}[DEBUG]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - $*" >&2
+    else
+        echo -e "${COLOR_BLUE}==> ${COLOR_BOLD}${*}${COLOR_RESET}"
+    fi
 }
 
 logk() {
     SHAZAM_STEP=""
-    echo "OK"
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -e "${COLOR_GREEN}[DEBUG]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - ✓ Operation completed successfully" >&2
+    else
+        echo -e "${COLOR_GREEN}✓ Operation completed successfully${COLOR_RESET}"
+    fi
 }
 
 logn_no_sudo() {
     SHAZAM_STEP="$*"
-    printf -- "--> %s " "$*"
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -ne "${COLOR_CYAN}[DEBUG]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - $* " >&2
+    else
+        printf -- "${COLOR_BLUE}==> ${COLOR_BOLD}%s${COLOR_RESET} " "$*"
+    fi
 }
 
 logskip() {
     SHAZAM_STEP=""
-    echo "SKIPPED"
-    echo "$*"
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -e "${COLOR_YELLOW}[DEBUG]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - SKIPPED: $*" >&2
+    else
+        echo -e "${COLOR_YELLOW}⏭  Operation skipped${COLOR_RESET}"
+        echo -e "${COLOR_YELLOW}   Reason: ${*}${COLOR_RESET}"
+    fi
+}
+
+logerr() {
+    SHAZAM_STEP=""
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -e "${COLOR_RED}[ERROR]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - $*" >&2
+    else
+        echo -e "${COLOR_RED}❌ Error: ${*}${COLOR_RESET}" >&2
+    fi
+}
+
+logwarn() {
+    SHAZAM_STEP=""
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -e "${COLOR_YELLOW}[WARN]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - $*" >&2
+    else
+        echo -e "${COLOR_YELLOW}⚠️  Warning: ${*}${COLOR_RESET}" >&2
+    fi
 }
 
 sudo_init() {
@@ -156,13 +202,21 @@ sudo_refresh() {
 log() {
     SHAZAM_STEP="$*"
     sudo_refresh
-    echo "--> $*"
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -e "${COLOR_CYAN}[DEBUG]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - $*" >&2
+    else
+        echo -e "${COLOR_BLUE}==> ${COLOR_BOLD}${*}${COLOR_RESET}"
+    fi
 }
 
 logn() {
     SHAZAM_STEP="$*"
     sudo_refresh
-    printf -- "--> %s " "$*"
+    if [ "$SHAZAM_DEBUG" -gt 0 ]; then
+        echo -ne "${COLOR_CYAN}[DEBUG]${COLOR_RESET} $(date '+%Y-%m-%d %H:%M:%S') - $* " >&2
+    else
+        printf -- "${COLOR_BLUE}==> ${COLOR_BOLD}%s${COLOR_RESET} " "$*"
+    fi
 }
 
 readonly HOME_DIR="$HOME"
@@ -220,14 +274,8 @@ symlink_repo_dotfiles() {
 }
 
 symlink_vscode_settings() {
-    echo "-> Symlinking VSCode settings."
-
-    local vscode_base_dir
-    case "$(uname -s)" in
-    Darwin) vscode_base_dir="$HOME/Library/Application Support" ;;
-    Linux) vscode_base_dir="$HOME/.config" ;;
-    *) echo "-> Error: symlink.sh only supports macOS and Linux." && return 1 ;;
-    esac
+    log "Configuring VSCode settings and extensions..."
+    local vscode_base_dir="$HOME/Library/Application Support"
 
     local -a editor_dirs=(
         "Code"
@@ -239,8 +287,14 @@ symlink_vscode_settings() {
 
     local dir
     for dir in "${editor_dirs[@]}"; do
+        logn "Setting up configuration for $dir..."
         local full_path="$vscode_base_dir/$dir/User"
-        [[ -d "$full_path" ]] && symlink_dir_contents "$VSCODE_DOT_DIR/settings" "$VSCODE_DOT_DIR" "$full_path"
+        if [[ -d "$full_path" ]]; then
+            symlink_dir_contents "$VSCODE_DOT_DIR/settings" "$VSCODE_DOT_DIR" "$full_path"
+            logk
+        else
+            logskip "$dir is not installed on this system"
+        fi
     done
 }
 
@@ -289,7 +343,7 @@ run_dotfile_scripts() {
 # Set up Xcode Command Line Tools
 install_xcode_clt() {
     if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
-        log "Installing the Xcode Command Line Tools:"
+        log "Installing Xcode Command Line Tools - This may take a few minutes..."
         CLT_STRING=".com.apple.dt.CommandLineTools.installondemand.in-progress"
         CLT_PLACEHOLDER="/tmp/$CLT_STRING"
         sudo_askpass touch "$CLT_PLACEHOLDER"
@@ -304,14 +358,16 @@ install_xcode_clt() {
         if ! [ -f "/Library/Developer/CommandLineTools/usr/bin/git" ]; then
             if [ "$SHAZAM_INTERACTIVE" -gt 0 ]; then
                 echo
-                logn "Requesting user install of Xcode Command Line Tools:"
+                logn "Xcode Command Line Tools not found. Initiating interactive installation..."
                 xcode-select --install
             else
                 echo
-                abort "Install Xcode Command Line Tools with 'xcode-select --install'."
+                abort "Xcode Command Line Tools installation failed. Please run 'xcode-select --install' manually."
             fi
         fi
         logk
+    else
+        logskip "Xcode Command Line Tools are already installed"
     fi
 }
 
@@ -436,11 +492,21 @@ configure_git
 logk
 
 install_homebrew() {
-    logn "Installing Homebrew:"
+    log "Preparing Homebrew installation - Setting up directories and permissions..."
     HOMEBREW_PREFIX="$(brew --prefix 2>/dev/null || true)"
     [ -n "$HOMEBREW_PREFIX" ] || HOMEBREW_PREFIX="$DEFAULT_HOMEBREW_PREFIX"
-    [ -d "$HOMEBREW_PREFIX" ] || sudo_askpass mkdir -p "$HOMEBREW_PREFIX"
+
+    if [ ! -d "$HOMEBREW_PREFIX" ]; then
+        logn "Creating Homebrew directory at $HOMEBREW_PREFIX..."
+        sudo_askpass mkdir -p "$HOMEBREW_PREFIX"
+        logk
+    fi
+
+    logn "Setting up Homebrew directory permissions..."
     sudo_askpass chown -R "root:wheel" "$HOMEBREW_PREFIX" 2>/dev/null || true
+    logk
+
+    log "Creating required Homebrew subdirectories..."
     (
         cd "$HOMEBREW_PREFIX"
         sudo_askpass mkdir -p \
@@ -448,6 +514,8 @@ install_homebrew() {
         sudo_askpass chown "$USER:admin" \
             Cellar Caskroom Frameworks bin etc include lib opt sbin share var
     )
+    logk
+
     HOMEBREW_REPOSITORY="$(brew --repository 2>/dev/null || true)"
     [ -n "$HOMEBREW_REPOSITORY" ] || HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
     [ -d "$HOMEBREW_REPOSITORY" ] || sudo_askpass mkdir -p "$HOMEBREW_REPOSITORY"
@@ -515,8 +583,7 @@ run_brew_installs() {
     fi
     # Disable Homebrew Analytics: https://docs.brew.sh/Analytics
     brew analytics off
-    [ "$SHAZAM_CI" -gt 0 ] || [ "$LINUX" -gt 0 ] && set_up_brew_skips
-    [ "$LINUX" -gt 0 ] && brew install gcc # "We recommend that you install GCC"
+    [ "$SHAZAM_CI" -gt 0 ] && set_up_brew_skips
     log "Running Homebrew installs."
     if [ -f "$HOME/.Brewfile" ]; then
         log "Installing from $HOME/.Brewfile with Brew Bundle."
@@ -554,12 +621,6 @@ run_brew_installs() {
 }
 
 # Install Homebrew
-# https://docs.brew.sh/Installation
-# https://docs.brew.sh/Homebrew-on-Linux
-# Homebrew installs require `sudo`, but not necessarily admin
-# https://docs.brew.sh/FAQ#why-does-homebrew-say-sudo-is-bad
-# https://github.com/Homebrew/install/issues/312
-# https://github.com/Homebrew/install/pull/315/files
 if [ "$SHAZAM_SUDO" -eq 0 ]; then
     sudo_init || logskip "Skipping Homebrew installation (requires sudo)."
 fi
@@ -570,26 +631,21 @@ if [ "$SHAZAM_SUDO" -gt 0 ]; then
     sudo_askpass chmod -R 775 "$HOMEBREW_PREFIX/"{Caskroom,Cellar,Frameworks}
     sudo_askpass chown -R "$USER" "$HOMEBREW_PREFIX" 2>/dev/null || true
     logk
-    if [ "$MACOS" -gt 0 ]; then
-        log "Installing Homebrew on macOS"
-        script_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-        NONINTERACTIVE=$SHAZAM_CI \
-            /usr/bin/env bash -c "$(curl -fsSL $script_url)" || install_homebrew
-        logk
-    else
-        abort "Unsupported operating system $OS"
-    fi
+    log "Installing Homebrew on macOS"
+    script_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+    NONINTERACTIVE=$SHAZAM_CI \
+        /usr/bin/env bash -c "$(curl -fsSL $script_url)" || install_homebrew
+    logk
     run_brew_installs || abort "Homebrew installs were not successful."
     brew cleanup
 fi
 
 ### Configure macOS
-if [ "${MACOS:-0}" -gt 0 ] || [ "$(uname)" = "Darwin" ]; then
-    if [ "$SHAZAM_ADMIN" -gt 0 ]; then
-        "$HOME"/.config/shazam2/scripts/macSettings.sh
-    else
-        echo "Not admin. Skipping macos.sh. Set \$SHAZAM_ADMIN to run macos.sh."
-    fi
+### Configure macOS
+if [ "$SHAZAM_ADMIN" -gt 0 ]; then
+    "$HOME"/.config/shazam2/scripts/macSettings.sh
+else
+    echo "Not admin. Skipping macos.sh. Set \$SHAZAM_ADMIN to run macos.sh."
 fi
 
 # Symlink VSCode settings
@@ -629,8 +685,6 @@ if [ "$SHAZAM_SUDO" -gt 0 ]; then
     *)
         if type zsh &>/dev/null; then
             echo "--> Changing shell to Zsh. Sudo required."
-            [ "${LINUX:-0}" -gt 0 ] || [ "$(uname)" = "Linux" ] &&
-                type -P zsh | sudo tee -a /etc/shells
             sudo chsh -s "$(type -P zsh)" "$USER"
         else
             echo "Zsh not found."
