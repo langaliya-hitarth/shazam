@@ -30,7 +30,7 @@ check_open_vsx() {
 install_extensions() {
   printf "\nInstalling extensions for %s...\n\n" "$1"
   local extension_info extension_name extensions installed
-  extensions="$HOME/.config/shazam/vscode/.extensions"
+  extensions="$HOME/.config/shazam2/vscode/extensions.txt"
 
   installed=("$($1 --list-extensions --show-versions)")
   while read -r extension; do
@@ -54,7 +54,7 @@ install_extensions() {
 
 user_settings() {
   printf "\nCopying settings for %s...\n" "$1"
-  local custom_settings_file="$HOME/.config/shazam/vscode/settings.json"
+  local custom_settings_file="$HOME/.config/shazam2/vscode/settings.json"
   local vscode_settings_dir="$HOME/Library/Application Support/$1/User"
 
   if [ -d "$vscode_settings_dir" ]; then

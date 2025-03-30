@@ -35,7 +35,7 @@ window-width = 120
 # Shell and integration settings
 clipboard-read = allow
 command = /bin/zsh
-config-file = /Users/hitarth/.config/shazam/.ghostty
+config-file = /Users/hitarth/.config/shazam2/.ghostty
 copy-on-select = clipboard
 macos-titlebar-style = tabs
 shell-integration = zsh

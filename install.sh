@@ -22,8 +22,8 @@ SHAZAM_DEBUG=${SHAZAM_DEBUG:-0}
 SHAZAM_INTERACTIVE=${SHAZAM_INTERACTIVE:-0}
 STDIN_FILE_DESCRIPTOR=0
 [ -t "$STDIN_FILE_DESCRIPTOR" ] && SHAZAM_INTERACTIVE=1
-SHAZAM_GIT_NAME=${SHAZAM_GIT_NAME:?Variable not set}
-SHAZAM_GIT_EMAIL=${SHAZAM_GIT_EMAIL:?Variable not set}
+SHAZAM_GIT_NAME=${SHAZAM_GIT_NAME:="Hitarth Langaliya"}
+SHAZAM_GIT_EMAIL=${SHAZAM_GIT_EMAIL:="dev.hlangaliya@gmail.com"}
 SHAZAM_GITHUB_USER=${SHAZAM_GITHUB_USER:="langaliya-hitarth"}
 SHAZAM_REPO_URL="https://github.com/$SHAZAM_GITHUB_USER/dotfiles"
 SHAZAM_URL=${SHAZAM_URL:="$SHAZAM_REPO_URL"}
@@ -164,11 +164,112 @@ logn() {
     printf -- "--> %s " "$*"
 }
 
+readonly HOME_DIR="$HOME"
+readonly DOT_DIR="$HOME_DIR/.config/shazam2"
+readonly VSCODE_DOT_DIR="$DOT_DIR/vscode"
+
+# Array of files/directories to ignore when symlinking
+readonly IGNORE_PATTERNS=(
+    ".DS_Store"
+    ".git"
+    ".gitattributes"
+    ".github"
+    ".gitignore"
+)
+
+symlink_dir_contents() {
+    local target_dir="$3/${1##"$2"/}"
+    mkdir -p "$target_dir"
+    local file
+    find "$1" -maxdepth 1 -mindepth 1 -print0 | while IFS= read -r -d '' file; do
+        symlink_file "$file" "$2" "$3"
+    done
+}
+
+symlink_file() {
+    ln -nsfF "$1" "$3/${1##"$2"/}"
+}
+
+symlink_repo_dotfiles() {
+    echo "-> Symlinking dotfiles into Shazam's directory."
+
+    local dotfile
+    for dotfile in "$DOT_DIR"/.*; do
+        [[ -e "$dotfile" ]] || continue # Skip if file doesn't exist
+
+        # Skip ignored patterns
+        local should_ignore=false
+        for pattern in "${IGNORE_PATTERNS[@]}"; do
+            if [[ "$dotfile" == *"$pattern" ]]; then
+                should_ignore=true
+                break
+            fi
+        done
+
+        "$should_ignore" && continue
+
+        if [[ -d "$dotfile" ]]; then
+            symlink_dir_contents "$dotfile" "$DOT_DIR" "$HOME_DIR"
+        elif [[ -f "$dotfile" ]]; then
+            symlink_file "$dotfile" "$DOT_DIR" "$HOME_DIR"
+        fi
+    done
+
+    ln -nsfF "$DOT_DIR/Brewfile" "$HOME_DIR/.Brewfile"
+}
+
+symlink_vscode_settings() {
+    echo "-> Symlinking VSCode settings."
+
+    local vscode_base_dir
+    case "$(uname -s)" in
+    Darwin) vscode_base_dir="$HOME_DIR/Library/Application Support" ;;
+    Linux) vscode_base_dir="$HOME_DIR/.config" ;;
+    *) echo "-> Error: symlink.sh only supports macOS and Linux." && return 1 ;;
+    esac
+
+    local -a editor_dirs=(
+        "Code"
+        "Cursor"
+        "Code - Exploration"
+        "Code - Insiders"
+        "VSCodium"
+    )
+
+    local dir
+    for dir in "${editor_dirs[@]}"; do
+        local full_path="$vscode_base_dir/$dir"
+        [[ -d "$full_path" ]] && symlink_dir_contents "$VSCODE_DOT_DIR/User" "$VSCODE_DOT_DIR" "$full_path"
+    done
+}
+
+symlink_zshrc() {
+    echo "-> Backing up and symlinking .zshrc file"
+
+    # Create backups directory if it doesn't exist
+    local backup_dir="$DOT_DIR/backups"
+    mkdir -p "$backup_dir"
+
+    # Generate timestamp for backup file
+    local timestamp=$(date '+%Y%m%d%H%M%S')
+    local backup_file="$backup_dir/.zshrc-backup-$timestamp"
+
+    # Backup existing .zshrc if it exists and is not a symlink
+    if [[ -f "$HOME_DIR/.zshrc" && ! -L "$HOME_DIR/.zshrc" ]]; then
+        cp "$HOME_DIR/.zshrc" "$backup_file"
+        echo "-> Backed up existing .zshrc to $backup_file"
+    fi
+
+    # Symlink .zshrc
+    ln -nsfF "$DOT_DIR/.zshrc" "$HOME_DIR/.zshrc"
+    echo "-> Symlinked .zshrc file"
+}
+
 # Given a list of scripts in the dotfiles repo, run the first one that exists
 run_dotfile_scripts() {
-    if [ -d "$HOME/.config/shazam" ]; then
+    if [ -d "$HOME/.config/shazam2" ]; then
         (
-            cd "$HOME/.config/shazam"
+            cd "$HOME/.config/shazam2"
             for i in "$@"; do
                 if [ -f "$i" ] && [ -x "$i" ]; then
                     log_no_sudo "Running dotfiles script $i:"
@@ -303,23 +404,32 @@ configure_git
 
 # Set up dotfiles
 # shellcheck disable=SC2086
-if [ ! -d "$HOME/.config/shazam" ]; then
+if [ ! -d "$HOME/.config/shazam2" ]; then
     if [ -z "$SHAZAM_URL" ] || [ -z "$SHAZAM_BRANCH" ]; then
         abort "Please set SHAZAM_URL and SHAZAM_BRANCH."
     fi
-    log_no_sudo "Cloning $SHAZAM_URL to $HOME/.config/shazam."
-    git clone $Q "$SHAZAM_URL" "$HOME/.config/shazam"
+    log_no_sudo "Cloning $SHAZAM_URL to $HOME/.config/shazam2."
+    git clone $Q "$SHAZAM_URL" "$HOME/.config/shazam2"
 fi
 shazam_branch_name="${SHAZAM_BRANCH##*/}"
-log_no_sudo "Checking out $shazam_branch_name in $HOME/.config/shazam."
+log_no_sudo "Checking out $shazam_branch_name in $HOME/.config/shazam2."
 # shellcheck disable=SC2086
 (
-    cd "$HOME/.config/shazam"
+    cd "$HOME/.config/shazam2"
     git stash
     git fetch $Q
     git checkout "$shazam_branch_name"
     git pull $Q --rebase --autostash
 )
+
+if symlink_repo_dotfiles; then
+    echo "-> Symlinking successful. Finishing up..."
+    return 0
+else
+    echo "-> Symlinking unsuccessful."
+    return 1
+fi
+
 run_dotfile_scripts scripts/symlink.sh
 # The second call to `configure_git` is needed for CI use cases in which some
 # aspects of the `.gitconfig` cannot be used after cloning the dotfiles repo.
@@ -420,9 +530,9 @@ run_brew_installs() {
     else
         [ -z "$SHAZAM_DOTFILES_BRANCH" ] && SHAZAM_DOTFILES_BRANCH=HEAD
         git_branch="${SHAZAM_DOTFILES_BRANCH##*/}"
-        github_user="${SHAZAM_GITHUB_USER:-br3ndonland}"
+        github_user="${SHAZAM_GITHUB_USER:-langaliya-hitarth}"
         brewfile_domain="https://raw.githubusercontent.com"
-        brewfile_path="$github_user/dotfiles/$git_branch/Brewfile"
+        brewfile_path="$github_user/shazam/$git_branch/Brewfile"
         brewfile_url="$brewfile_domain/$brewfile_path"
         log "Installing from $brewfile_url with Brew Bundle."
         curl -fsSL "$brewfile_url" | brew bundle --file=-
@@ -482,85 +592,86 @@ fi
 ### Configure macOS
 if [ "${MACOS:-0}" -gt 0 ] || [ "$(uname)" = "Darwin" ]; then
     if [ "$SHAZAM_ADMIN" -gt 0 ]; then
-        "$HOME"/.config/shazam/scripts/macSettings.sh
+        "$HOME"/.config/shazam2/scripts/macSettings.sh
     else
         echo "Not admin. Skipping macos.sh. Set \$SHAZAM_ADMIN to run macos.sh."
     fi
 fi
 
+# Symlink VSCode settings
+if symlink_vscode_settings; then
+    echo "-> Symlinking VSCode settings successful. Finishing up..."
+    return 0
+else
+    echo "-> Symlinking VSCode settings unsuccessful."
+    return 1
+fi
+
 ### Install VSCode extensions
 # TODO: Cursor extension installs not working
 for i in {code,code-exploration,code-insiders,code-server,codium}; do
-    "$HOME"/.config/shazam/scripts/vscode.sh "$i"
+    "$HOME"/.config/shazam2/scripts/vscode.sh "$i"
 done
 
-#Get project directory
-# echo_message "The setup will be installed in '~/.config/shazam'."
-# project_dir="$(pwd)"
-# SHAZAM="$HOME/.config/shazam"
+# Install nvm
+# Create ~/.nvm directory if nvm is installed but the directory does not exist
+echo "Installing nvm..."
+export NVM_DIR="$HOME/.config/shazam2/.nvm"
+if [ ! -d "$NVM_DIR" ]; then
+    git clone -q https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+    cd "$NVM_DIR" || exit
+    git checkout -q "$(git describe --abbrev=0 --tags --match "v[0-9]*" "$(git rev-list --tags --max-count=1)")"
+fi
 
-# echo_message() {
-#     BOLD='\033[1;90m'
-#     PURPLE='\033[0;34m' # Oh-My-Zsh color
-#     NC='\033[0m'        # No Color
+# shellcheck source=./nvm.sh
+. "$NVM_DIR/nvm.sh" >/dev/null 2>&1
 
-#     echo -e "${BOLD}${PURPLE}\n$1${NC}\n"
-# }
+echo "Installing node..."
+nvm install --lts --silent
+echo "Node version $(node -v) installed"
 
-# # Backup original .zshrc file
-# echo_message "Backing up the current .zshrc file..."
-# backup_dir="$SHAZAM/backup"
-# mkdir -p "$backup_dir"
-# if mv -n ~/.zshrc "$backup_dir/.$(date +"%Y%m%d")-zshrc-backup"; then
-#     echo_message "Backed up the current .zshrc to $backup_dir."
-# fi
+### Set shell
+if [ "$SHAZAM_SUDO" -gt 0 ]; then
+    case $SHELL in
+    *zsh) echo "Shell is already set to Zsh." ;;
+    *)
+        if type zsh &>/dev/null; then
+            echo "--> Changing shell to Zsh. Sudo required."
+            [ "${LINUX:-0}" -gt 0 ] || [ "$(uname)" = "Linux" ] &&
+                type -P zsh | sudo tee -a /etc/shells
+            sudo chsh -s "$(type -P zsh)" "$USER"
+        else
+            echo "Zsh not found."
+        fi
+        ;;
+    esac
+else
+    echo "Not sudo. Shell not changed. Set \$SHAZAM_SUDO to change shell."
+fi
 
-# # Copy configuration files
-# echo_message "Copying configuration files..."
-# cp -f config/.zshrc ~/
-# cp -f -r config/.aliases config/.shazam config/.ghostty config/.oh-my-posh ~/.config/shazam/
+## Install Oh My ZSH
+if [ -d "$HOME/.config/shazam2/.oh-my-zsh" ]; then
+    echo "Oh My ZSH is already installed."
+else
+    echo "Installing Oh My ZSH..."
+    sh -c "ZSH='$HOME/.config/shazam2/.oh-my-zsh' $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
-# # Check and install Homebrew
-# if ! command -v brew &>/dev/null; then
-#     echo_message "Homebrew is not installed. Installing..."
-#     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-#     eval "$(/opt/homebrew/bin/brew shellenv)"
-# else
-#     echo_message "Homebrew is already installed."
-# fi
+# Initialize and update git submodules if .gitmodules exists
+if [ -f "$HOME/.config/shazam2/.gitmodules" ]; then
+    echo "Found .gitmodules file. Initializing and updating git submodules..."
+    cd "$HOME/.config/shazam2" || exit
+    git submodule init
+    git submodule update --init --recursive
+    echo "Git submodules updated successfully."
+else
+    echo "No .gitmodules file found. Skipping submodule initialization."
+fi
 
-# # Read packages from Brewfile
-# echo_message "Installing packages from Brewfile..."
-# brewfile="./Brewfile"
-# if [ -f "$brewfile" ]; then
-#     # Extract brew packages from Brewfile, ignoring comments and empty lines
-#     brew bundle install --file="$brewfile"
-# else
-#     echo_message "Error: Brewfile not found at $brewfile"
-#     exit 1
-# fi
-
-# # Install nvm
-# # Create ~/.nvm directory if nvm is installed but the directory does not exist
-# echo_message "Installing nvm..."
-# export NVM_DIR="$SHAZAM/.nvm" && (
-#     git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-#     cd "$NVM_DIR"
-#     git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
-# ) && \. "$NVM_DIR/nvm.sh"
-
-# echo_message "Installing node..."
-# nvm install --lts
-
-# # Read npm packages from .npm file
-# npm_file="../brew/.npm"
-# if [ -f "$npm_file" ]; then
-#     # Read npm packages into array, ignoring empty lines and comments
-#     mapfile -t npm_packages < <(grep -v '^#' "$npm_file" | grep -v '^$')
-# else
-#     echo_message "Error: NPM packages file not found at $npm_file"
-#     exit 1
-# fi
+### Install Oh My Posh
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/.oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
+    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/.oh-my-posh/theme.toml)"
+fi
 
 # # Check MySQL service status
 # mysql_service_status=$(brew services list | grep mysql | awk '{print $2}')
@@ -593,16 +704,16 @@ done
 # fi
 
 # echo_message "Installing oh-my-zsh."
-# if [ -d ~/.config/shazam/oh-my-zsh ]; then
+# if [ -d ~/.config/shazam2/oh-my-zsh ]; then
 #     echo_message "oh-my-zsh is already installed."
-#     git -C ~/.config/shazam/oh-my-zsh remote set-url origin https://github.com/ohmyzsh/ohmyzsh.git
+#     git -C ~/.config/shazam2/oh-my-zsh remote set-url origin https://github.com/ohmyzsh/ohmyzsh.git
 # elif [ -d ~/.oh-my-zsh ]; then
-#     echo_message "oh-my-zsh is already installed at '~/.oh-my-zsh'. Moving it to '~/.config/shazam/oh-my-zsh'."
-#     export ZSH="$HOME/.config/shazam/oh-my-zsh"
-#     mv ~/.oh-my-zsh ~/.config/shazam/oh-my-zsh
-#     git -C ~/.config/shazam/oh-my-zsh remote set-url origin https://github.com/ohmyzsh/ohmyzsh.git
+#     echo_message "oh-my-zsh is already installed at '~/.oh-my-zsh'. Moving it to '~/.config/shazam2/oh-my-zsh'."
+#     export ZSH="$HOME/.config/shazam2/oh-my-zsh"
+#     mv ~/.oh-my-zsh ~/.config/shazam2/oh-my-zsh
+#     git -C ~/.config/shazam2/oh-my-zsh remote set-url origin https://github.com/ohmyzsh/ohmyzsh.git
 # else
-#     git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.config/shazam/oh-my-zsh
+#     git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.config/shazam2/oh-my-zsh
 # fi
 
 # # Move .zcompdump files
@@ -610,37 +721,3 @@ done
 # [ -f ~/.zcompdump* ] && mv ~/.zcompdump* ~/.cache/zsh/
 
 # echo_message "All plugins and themes are up to date!"
-
-# # Install Cursor extensions
-# extensions_file="$project_dir/vscode/.extensions"
-
-# extension_installed() {
-#     local extension="$1"
-#     code --list-extensions | grep -q "$1" && return 0 || return 1
-# }
-
-# while IFS= read -r extension || [[ -n "$extension" ]]; do
-#     if ! extension_installed "$extension"; then
-#         echo_message "Installing extension: $extension"
-#         code --install-extension "$extension"
-#     else
-#         echo_message "$extension already installed"
-#     fi
-# done <"$extensions_file"
-
-# # Copy custom Cursor settings
-# custom_settings_file="$project_dir/vscode/settings.json"
-# vscode_settings_dir="$HOME/Library/Application Support/Cursor/User"
-# if [ -d "$vscode_settings_dir" ]; then
-#     cp -f "$custom_settings_file" "$vscode_settings_dir"
-#     echo_message "Copied Cursor settings.json"
-# fi
-
-# # Update oh-my-zsh
-# if /bin/zsh -c 'source ~/.zshrc && omz update'; then
-#     echo_message "\nInstallation Complete!"
-# else
-#     echo_message "\nWarning: Something went wrong."
-# fi
-
-# exit

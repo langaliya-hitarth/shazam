@@ -3,7 +3,7 @@ set -euo pipefail # Enable strict error handling
 
 # Constants
 readonly HOME_DIR="$HOME"
-readonly DOT_DIR="$HOME_DIR/.config/shazam"
+readonly DOT_DIR="$HOME_DIR/.config/shazam2"
 readonly VSCODE_DOT_DIR="$DOT_DIR/vscode"
 
 # Array of files/directories to ignore when symlinking
@@ -81,13 +81,35 @@ symlink_vscode_settings() {
   done
 }
 
+backup_and_symlink_zshrc() {
+  echo "-> Backing up and symlinking .zshrc file"
+
+  # Create backups directory if it doesn't exist
+  local backup_dir="$DOT_DIR/backups"
+  mkdir -p "$backup_dir"
+
+  # Generate timestamp for backup file
+  local timestamp=$(date '+%Y%m%d%H%M%S')
+  local backup_file="$backup_dir/.zshrc-backup-$timestamp"
+
+  # Backup existing .zshrc if it exists and is not a symlink
+  if [[ -f "$HOME_DIR/.zshrc" && ! -L "$HOME_DIR/.zshrc" ]]; then
+    cp "$HOME_DIR/.zshrc" "$backup_file"
+    echo "-> Backed up existing .zshrc to $backup_file"
+  fi
+
+  # Symlink .zshrc
+  ln -nsfF "$DOT_DIR/.zshrc" "$HOME_DIR/.zshrc"
+  echo "-> Symlinked .zshrc file"
+}
+
 main() {
   if [[ ! -d "$DOT_DIR" ]]; then
     echo "-> Error: Shazam's directory not found at $DOT_DIR"
     return 1
   fi
 
-  if symlink_repo_dotfiles && symlink_vscode_settings; then
+  if symlink_repo_dotfiles && symlink_vscode_settings && backup_and_symlink_zshrc; then
     echo "-> Symlinking successful. Finishing up..."
     return 0
   else

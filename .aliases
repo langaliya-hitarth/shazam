@@ -12,14 +12,14 @@ alias szshrc="vi $SHAZAM/.shazam && source ~/.zshrc"
 alias shazam="source ~/.zshrc"
 
 # Plugins
-# alias bat="bat --theme=Coldark-Dark"
-# alias cat="bat"
-# alias cpf="copyfile"
-# alias cpp="copypath"
-# alias l="eza --color=always --git --no-filesize --icons=always --no-time --no-user --no-permissions"
-# alias ll="eza -a --color=always --long --grid --git --no-filesize --icons=always --no-time --no-user --no-permissions"
-# alias ls="eza --color=always --long --git --icons=always"
-# alias la="eza -a --color=always --long --git --icons=always"
+alias bat="bat --theme=Coldark-Dark"
+alias cat="bat"
+alias cpf="copyfile"
+alias cpp="copypath"
+alias l="eza --color=always --git --no-filesize --icons=always --no-time --no-user --no-permissions"
+alias ll="eza -a --color=always --long --grid --git --no-filesize --icons=always --no-time --no-user --no-permissions"
+alias ls="eza --color=always --long --git --icons=always"
+alias la="eza -a --color=always --long --git --icons=always"
 
 # Shopify Aliases
 alias h2="npx shopify hydrogen"
@@ -27,7 +27,7 @@ alias s="shopify"
 
 # Git aliases
 function gconfig() {
-    git config user.name "Hitarth Langaliya"
+  git config user.name "Hitarth Langaliya"
   if [[ "$1" == "-d" ]]; then
     git config user.email "dev.hlangaliya@gmail.com"
     echo "Git configuration for Dev updated successfully."
@@ -47,7 +47,6 @@ killp() {
     echo "No matching process found"
   fi
 }
-
 
 # NPM aliases
 alias npmI="npm init"
