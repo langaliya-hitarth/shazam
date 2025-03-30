@@ -47,17 +47,17 @@ fi
 
 plugins=(
   git
-  zsh-nvm
+  # zsh-nvm
   brew
   copyfile
   copypath
   extract
   fzf
-  zsh-autosuggestions
-  fast-syntax-highlighting
-  you-should-use
+  # zsh-autosuggestions
+  # fast-syntax-highlighting
+  # you-should-use
   sudo
-  zsh-better-npm-completion
+  # zsh-better-npm-completion
 )
 
 source $ZSH/oh-my-zsh.sh
