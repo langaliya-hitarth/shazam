@@ -719,7 +719,8 @@ if [ -d "$HOME/.config/shazam2/.oh-my-zsh" ]; then
     echo "Oh My ZSH is already installed."
 else
     echo "Installing Oh My ZSH..."
-    sh -c "ZSH='$HOME/.config/shazam2/.oh-my-zsh' $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    export ZSH="$HOME/.config/shazam2/.oh-my-zsh"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
 # Initialize and update git submodules if .gitmodules exists
