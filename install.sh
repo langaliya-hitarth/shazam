@@ -730,7 +730,7 @@ fi
 # Initialize and update git submodules if .gitmodules exists
 if [ -f "$HOME/.config/shazam2/dotfiles/git/.gitmodules" ]; then
     echo "Found .gitmodules file. Initializing and updating git submodules..."
-    cd "$HOME/.config/shazam2"
+    cd "$HOME/.config/shazam2/dotfiles/git/.gitmodules"
     git submodule init
     git submodule update --init --recursive
     echo "Git submodules updated successfully."
@@ -738,7 +738,7 @@ else
     echo "No .gitmodules file found. Skipping submodule initialization."
 fi
 
-source ~/.zshrc
+symlink_zshrc
 
 # # Check MySQL service status
 # mysql_service_status=$(brew services list | grep mysql | awk '{print $2}')
