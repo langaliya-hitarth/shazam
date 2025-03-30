@@ -702,20 +702,18 @@ else
 fi
 
 ### Install Oh My Posh
-# if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
-#     if [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ]; then
-#         if [[ "$SHELL" == "/bin/zsh" ]]; then
-echo "Installing Oh My Posh"
-eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
-
-exec zsh
-#         else
-#             echo "Warning: Shell is not Zsh. Oh My Posh initialization skipped."
-#         fi
-#     else
-#         echo "Warning: Oh My Posh directory does not exist. Initialization skipped."
-#     fi
-# fi
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+    if [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ]; then
+        if [[ "$SHELL" == "/bin/zsh" ]]; then
+            echo "Installing Oh My Posh"
+            eval "$(oh-my-posh init zsh --config \"${HOME}/.config/shazam2/dotfiles/oh-my-posh/theme.toml\")"
+        else
+            echo "Warning: Shell is not Zsh. Oh My Posh initialization skipped."
+        fi
+    else
+        echo "Warning: Oh My Posh directory does not exist. Initialization skipped."
+    fi
+fi
 
 ## Install Oh My ZSH
 if [ -d "$HOME/.config/shazam2/.oh-my-zsh" ]; then
