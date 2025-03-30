@@ -167,7 +167,7 @@ logn() {
 
 readonly HOME_DIR="$HOME"
 readonly DOT_DIR="$HOME_DIR/.config/shazam2"
-readonly VSCODE_DOT_DIR="$DOT_DIR/vscode"
+readonly VSCODE_DOT_DIR="$DOT_DIR/dotfiles/vscode"
 
 # Array of files/directories to ignore when symlinking
 readonly IGNORE_PATTERNS=(
@@ -216,7 +216,7 @@ symlink_repo_dotfiles() {
     #     fi
     # done
 
-    ln -nsfF "$DOT_DIR/Brewfile" "$HOME_DIR/.Brewfile"
+    ln -nsfF "$DOT_DIR/dotfiles/brew/.Brewfile" "$HOME/.Brewfile"
 }
 
 symlink_vscode_settings() {
@@ -224,8 +224,8 @@ symlink_vscode_settings() {
 
     local vscode_base_dir
     case "$(uname -s)" in
-    Darwin) vscode_base_dir="$HOME_DIR/Library/Application Support" ;;
-    Linux) vscode_base_dir="$HOME_DIR/.config" ;;
+    Darwin) vscode_base_dir="$HOME/Library/Application Support" ;;
+    Linux) vscode_base_dir="$HOME/.config" ;;
     *) echo "-> Error: symlink.sh only supports macOS and Linux." && return 1 ;;
     esac
 
@@ -239,8 +239,8 @@ symlink_vscode_settings() {
 
     local dir
     for dir in "${editor_dirs[@]}"; do
-        local full_path="$vscode_base_dir/$dir"
-        [[ -d "$full_path" ]] && symlink_dir_contents "$VSCODE_DOT_DIR/User" "$VSCODE_DOT_DIR" "$full_path"
+        local full_path="$vscode_base_dir/$dir/User"
+        [[ -d "$full_path" ]] && symlink_dir_contents "$VSCODE_DOT_DIR/settings" "$VSCODE_DOT_DIR" "$full_path"
     done
 }
 
@@ -650,7 +650,7 @@ else
 fi
 
 # Initialize and update git submodules if .gitmodules exists
-if [ -f "$HOME/.config/shazam2/.gitmodules" ]; then
+if [ -f "$HOME/.config/shazam2/dotfiles/git/.gitmodules" ]; then
     echo "Found .gitmodules file. Initializing and updating git submodules..."
     cd "$HOME/.config/shazam2" || exit
     git submodule init
@@ -661,8 +661,8 @@ else
 fi
 
 ### Install Oh My Posh
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/config/oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
-    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/config/oh-my-posh/theme.toml)"
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
+    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
 fi
 
 # # Check MySQL service status
