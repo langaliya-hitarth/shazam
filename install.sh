@@ -430,7 +430,7 @@ else
     return 1
 fi
 
-run_dotfile_scripts scripts/symlink.sh
+# run_dotfile_scripts scripts/symlink.sh
 # The second call to `configure_git` is needed for CI use cases in which some
 # aspects of the `.gitconfig` cannot be used after cloning the dotfiles repo.
 configure_git
@@ -576,11 +576,6 @@ if [ "$SHAZAM_SUDO" -gt 0 ]; then
         script_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
         NONINTERACTIVE=$SHAZAM_CI \
             /usr/bin/env bash -c "$(curl -fsSL $script_url)" || install_homebrew
-        logk
-    elif [ "$LINUX" -gt 0 ]; then
-        # https://docs.brew.sh/Homebrew-on-Linux
-        log "Installing Homebrew on Linux"
-        run_dotfile_scripts scripts/linuxbrew.sh
         logk
     else
         abort "Unsupported operating system $OS"
