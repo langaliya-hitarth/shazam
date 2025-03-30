@@ -156,14 +156,17 @@ logwarn() {
 sudo_init() {
     if [ "$SHAZAM_INTERACTIVE" -eq 0 ]; then
         sudo -n -l mkdir &>/dev/null && export SHAZAM_SUDO=1
+        echo "Checked sudo permissions without interaction. SHAZAM_SUDO set to $SHAZAM_SUDO."
         return
     fi
     local SUDO_PASSWORD SUDO_PASSWORD_SCRIPT
     if ! sudo --validate --non-interactive &>/dev/null; then
+        echo "Sudo validation failed. Prompting for password."
         while true; do
             read -rsp "--> Enter your password (for sudo access):" SUDO_PASSWORD
             echo
             if sudo --validate --stdin 2>/dev/null <<<"$SUDO_PASSWORD"; then
+                echo "Sudo validation successful."
                 break
             fi
             unset SUDO_PASSWORD
@@ -185,6 +188,7 @@ sudo_init() {
         SHAZAM_SUDO=1
         reset_debug
         export SHAZAM_SUDO SUDO_ASKPASS
+        echo "SUDO_ASKPASS set and SHAZAM_SUDO updated to $SHAZAM_SUDO."
     fi
     echo "SHAZAM_SUDO=$SHAZAM_SUDO"
 }
@@ -693,8 +697,16 @@ else
 fi
 
 ### Install Oh My Posh
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
-    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
+    if [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ]; then
+        if [ "$SHELL" = "/bin/zsh" ]; then
+            eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
+        else
+            echo "Warning: Shell is not Zsh. Oh My Posh initialization skipped."
+        fi
+    else
+        echo "Warning: Oh My Posh directory does not exist. Initialization skipped."
+    fi
 fi
 
 ## Install Oh My ZSH
