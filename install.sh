@@ -661,8 +661,8 @@ else
 fi
 
 ### Install Oh My Posh
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/.oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
-    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/.oh-my-posh/theme.toml)"
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/config/oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
+    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/config/oh-my-posh/theme.toml)"
 fi
 
 # # Check MySQL service status
