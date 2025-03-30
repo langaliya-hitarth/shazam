@@ -15,10 +15,6 @@ HISTFILE=~/.config/shazam2/.zsh_history
 HISTSIZE=10000
 setopt autocd extendedglob globdots histignorespace noautomenu nullglob
 
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/.oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
-  eval "$(oh-my-posh init zsh --config ~/.config/shazam2/.oh-my-posh/theme.toml)"
-fi
-
 ### homebrew
 # if [[ -z $HOMEBREW_PREFIX ]]; then
 #   case $(uname) in
@@ -70,6 +66,8 @@ export NVM_DIR="$HOME/.config/shazam2/.nvm"
 source ~/.config/shazam2/dotfiles/zsh/.aliases
 
 source <(zoxide init zsh)
+
+eval $(oh-my-posh init zsh --config "${HOME}/.config/shazam2/dotfiles/oh-my-posh/theme.toml")
 
 ### completions
 # if type brew &>/dev/null && [[ -d $HOMEBREW_PREFIX ]]; then
