@@ -67,7 +67,7 @@ source ~/.config/shazam2/dotfiles/zsh/.aliases
 
 source <(zoxide init zsh)
 
-eval $(oh-my-posh init zsh --config "${HOME}/.config/shazam2/dotfiles/oh-my-posh/theme.toml")
+source <(oh-my-posh init zsh --config "${HOME}/.config/shazam2/dotfiles/oh-my-posh/theme.toml")
 
 ### completions
 # if type brew &>/dev/null && [[ -d $HOMEBREW_PREFIX ]]; then
