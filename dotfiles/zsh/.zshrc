@@ -67,7 +67,7 @@ export NVM_DIR="$HOME/.config/shazam2/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 ### aliases
-source ~/.config/shazam2/.aliases
+source ~/.config/shazam2/dotfiles/zsh/.aliases
 
 source <(zoxide init zsh)
 
