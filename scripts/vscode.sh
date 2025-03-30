@@ -30,7 +30,7 @@ check_open_vsx() {
 install_extensions() {
   printf "\nInstalling extensions for %s...\n\n" "$1"
   local extension_info extension_name extensions installed
-  extensions="$HOME/.config/shazam2/vscode/extensions.txt"
+  extensions="$HOME/.config/shazam2/dotfiles/vscode/extensions.txt"
 
   installed=("$($1 --list-extensions --show-versions)")
   while read -r extension; do
@@ -50,19 +50,6 @@ install_extensions() {
       $1 --install-extension "$extension"
     fi
   done <"$extensions"
-}
-
-user_settings() {
-  printf "\nCopying settings for %s...\n" "$1"
-  local custom_settings_file="$HOME/.config/shazam2/vscode/settings.json"
-  local vscode_settings_dir="$HOME/Library/Application Support/$1/User"
-
-  if [ -d "$vscode_settings_dir" ]; then
-    cp -f "$custom_settings_file" "$vscode_settings_dir" &&
-      echo_message "Copied settings.json for $1"
-  else
-    echo_message "$1 settings directory does not exist: $vscode_settings_dir"
-  fi
 }
 
 if [ -z "$1" ]; then
@@ -93,7 +80,6 @@ for i in "$@"; do
     fi
     exit 1
   elif install_extensions "$i"; then
-    user_settings "$_"
     printf "\nSettings updated and extensions successfully installed for %s.\n" "$i"
   else
     printf "\nError: extensions not successfully installed for %s.\n" "$i"
