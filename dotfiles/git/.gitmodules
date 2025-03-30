@@ -1,34 +1,34 @@
-[submodule "$HOME/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-nvm"]
+[submodule ".oh-my-zsh/plugins/zsh-nvm"]
   branch = master
-  path = $HOME/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-nvm
+  path = .oh-my-zsh/plugins/zsh-nvm
   url = https://github.com/lukechilds/zsh-nvm
 
-[submodule "$/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-better-npm-completion"]
+[submodule ".oh-my-zsh/plugins/zsh-better-npm-completion"]
   branch = master
-  path = $/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-better-npm-completion
+  path = .oh-my-zsh/plugins/zsh-better-npm-completion
   url = https://github.com/lukechilds/zsh-better-npm-completion
 
-[submodule "$/.config/shazam2/.oh-my-zsh/custom/plugins/fast-syntax-highlighting"]
+[submodule ".oh-my-zsh/plugins/fast-syntax-highlighting"]
   branch = master
-  path = $/.config/shazam2/.oh-my-zsh/custom/plugins/fast-syntax-highlighting
+  path = .oh-my-zsh/plugins/fast-syntax-highlighting
   url = https://github.com/zdharma-continuum/fast-syntax-highlighting.git
 
-[submodule "$/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-autocomplete"]
+[submodule ".oh-my-zsh/plugins/zsh-autocomplete"]
   branch = main
-  path = $/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-autocomplete
+  path = .oh-my-zsh/plugins/zsh-autocomplete
   url = https://github.com/marlonrichert/zsh-autocomplete.git
 
-[submodule "$/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-completions"]
+[submodule ".oh-my-zsh/plugins/zsh-completions"]
   branch = master
-  path = $/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-completions
+  path = .oh-my-zsh/plugins/zsh-completions
   url = https://github.com/clarketm/zsh-completions
 
-[submodule "$/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-history-substring-search"]
+[submodule ".oh-my-zsh/plugins/zsh-history-substring-search"]
   branch = master
-  path = $/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-history-substring-search
+  path = .oh-my-zsh/plugins/zsh-history-substring-search
   url = https://github.com/zsh-users/zsh-history-substring-search
 
-[submodule "$/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+[submodule ".oh-my-zsh/plugins/zsh-autosuggestions"]
   branch = master
-  path = $/.config/shazam2/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  path = .oh-my-zsh/plugins/zsh-autosuggestions
   url = https://github.com/zsh-users/zsh-autosuggestions

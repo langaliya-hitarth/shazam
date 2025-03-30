@@ -7,7 +7,7 @@ export SHAZAM="$HOME/.config/shazam2"
 export ZSH="$SHAZAM/.oh-my-zsh"
 export POSH="$SHAZAM/.oh-my-posh"
 export EZA_CONFIG_DIR="$SHAZAM/eza"
-export ZSHPLUGINS="$ZSH/.plugins"
+export ZSHPLUGINS="$ZSH/plugins"
 export ZSHCUSTOM="$ZSH/custom"
 
 # History Configurations
