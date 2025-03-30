@@ -728,9 +728,9 @@ else
 fi
 
 # Initialize and update git submodules if .gitmodules exists
-if [ -f "$HOME/.config/shazam2/dotfiles/git/.gitmodules" ]; then
+if [ -f "$HOME/.config/shazam2/.gitmodules" ]; then
     echo "Found .gitmodules file. Initializing and updating git submodules..."
-    cd "$HOME/.config/shazam2/dotfiles/git"
+    cd "$HOME/.config/shazam2"
     git submodule init
     git submodule update --init --recursive
     echo "Git submodules updated successfully."
