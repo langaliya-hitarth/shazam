@@ -692,12 +692,9 @@ else
     echo "Not sudo. Shell not changed. Set \$SHAZAM_SUDO to change shell."
 fi
 
-## Install Oh My ZSH
-if [ -d "$HOME/.config/shazam2/.oh-my-zsh" ]; then
-    echo "Oh My ZSH is already installed."
-else
-    echo "Installing Oh My ZSH..."
-    sh -c "ZSH='$HOME/.config/shazam2/.oh-my-zsh' $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+### Install Oh My Posh
+if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
+    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
 fi
 
 # Initialize and update git submodules if .gitmodules exists
@@ -711,10 +708,15 @@ else
     echo "No .gitmodules file found. Skipping submodule initialization."
 fi
 
-### Install Oh My Posh
-if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ] && [ "$SHELL" = "/bin/zsh" ]; then
-    eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
+## Install Oh My ZSH
+if [ -d "$HOME/.config/shazam2/.oh-my-zsh" ]; then
+    echo "Oh My ZSH is already installed."
+else
+    echo "Installing Oh My ZSH..."
+    sh -c "ZSH='$HOME/.config/shazam2/.oh-my-zsh' $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 fi
+
+source ~/.zshrc
 
 # # Check MySQL service status
 # mysql_service_status=$(brew services list | grep mysql | awk '{print $2}')
