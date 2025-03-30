@@ -705,7 +705,7 @@ fi
 # if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
 #     if [ -d "$HOME/.config/shazam2/dotfiles/oh-my-posh" ]; then
 #         if [[ "$SHELL" == "/bin/zsh" ]]; then
-#             eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
+eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
 #         else
 #             echo "Warning: Shell is not Zsh. Oh My Posh initialization skipped."
 #         fi
