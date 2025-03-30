@@ -697,23 +697,23 @@ if [ "$TERM_PROGRAM" != "Apple_Terminal" ] && [ -d "$HOME/.config/shazam2/dotfil
     eval "$(oh-my-posh init zsh --config ~/.config/shazam2/dotfiles/oh-my-posh/theme.toml)"
 fi
 
-# Initialize and update git submodules if .gitmodules exists
-if [ -f "$HOME/.config/shazam2/dotfiles/git/.gitmodules" ]; then
-    echo "Found .gitmodules file. Initializing and updating git submodules..."
-    cd "$HOME/.config/shazam2" || exit
-    git submodule init
-    git submodule update --init --recursive
-    echo "Git submodules updated successfully."
-else
-    echo "No .gitmodules file found. Skipping submodule initialization."
-fi
-
 ## Install Oh My ZSH
 if [ -d "$HOME/.config/shazam2/.oh-my-zsh" ]; then
     echo "Oh My ZSH is already installed."
 else
     echo "Installing Oh My ZSH..."
     sh -c "ZSH='$HOME/.config/shazam2/.oh-my-zsh' $(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+fi
+
+# Initialize and update git submodules if .gitmodules exists
+if [ -f "$HOME/.config/shazam2/dotfiles/git/.gitmodules" ]; then
+    echo "Found .gitmodules file. Initializing and updating git submodules..."
+    cd "$HOME/.config/shazam2"
+    git submodule init
+    git submodule update --init --recursive
+    echo "Git submodules updated successfully."
+else
+    echo "No .gitmodules file found. Skipping submodule initialization."
 fi
 
 source ~/.zshrc
