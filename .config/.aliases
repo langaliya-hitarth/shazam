@@ -1,0 +1,70 @@
+# System aliases
+alias c="clear"
+# alias cd="z"
+alias .="cd ../"
+alias ..="cd ../../"
+alias ...="cd ../../../"
+
+# ZSH aliases
+alias aliases="vi $SHAZAM/.aliases && source ~/.zshrc"
+alias zshrc="vi ~/.zshrc && source ~/.zshrc"
+alias szshrc="vi $SHAZAM/.shazam && source ~/.zshrc"
+alias shazam="source ~/.zshrc"
+
+# Plugins
+# alias bat="bat --theme=Coldark-Dark"
+# alias cat="bat"
+# alias cpf="copyfile"
+# alias cpp="copypath"
+# alias l="eza --color=always --git --no-filesize --icons=always --no-time --no-user --no-permissions"
+# alias ll="eza -a --color=always --long --grid --git --no-filesize --icons=always --no-time --no-user --no-permissions"
+# alias ls="eza --color=always --long --git --icons=always"
+# alias la="eza -a --color=always --long --git --icons=always"
+
+# Shopify Aliases
+alias h2="npx shopify hydrogen"
+alias s="shopify"
+
+# Git aliases
+function gconfig() {
+    git config user.name "Hitarth Langaliya"
+  if [[ "$1" == "-d" ]]; then
+    git config user.email "dev.hlangaliya@gmail.com"
+    echo "Git configuration for Dev updated successfully."
+  else
+    git config user.email "hitarth@praella.com"
+    echo "Git configuration for Praella updated successfully."
+  fi
+}
+
+killp() {
+  local pid
+  pid=$(ps aux | grep "$1" | grep -v grep | awk '{print $2}')
+  if [[ -n "$pid" ]]; then
+    kill -9 "$pid"
+    echo "Killed process $pid"
+  else
+    echo "No matching process found"
+  fi
+}
+
+
+# NPM aliases
+alias npmI="npm init"
+alias npmG="npm i -g"
+alias npmS="npm i -S"
+alias npmD="npm i -D"
+alias npmO="npm outdated"
+alias npmU="npm update"
+alias npmV="npm -v"
+alias npmL="npm list"
+alias nvmrc="node -v > .nvmrc"
+alias nr="npm run"
+alias nrd="nr dev"
+alias nrc="nr clean"
+alias nrl="nr lint"
+alias nrp="nr prettier"
+alias nrf="nr fix"
+alias nrs="nr start"
+alias nrb="nr build"
+alias nrdp="nr deploy"

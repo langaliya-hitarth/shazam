@@ -1,0 +1,10 @@
+yarn
+pm2
+jest
+prisma
+nodemon
+prettier
+eslint
+typescript
+ts-node
+@shopify/cli@latest

@@ -7,10 +7,8 @@
 
 
 # Load shazam configurations
-source "$HOME/.config/shazam/.shazam"
-
-# Load p10K Theme
-source "$HOME/.config/shazam/.p10k.zsh"
+export SHAZAM="$HOME/.config/shazam"
+source "$SHAZAM/.shazam"
 
 # Now source oh-my-zsh.sh so that any plugins added in ~/.config/shazam/zshrc/* files also get loaded
 source $ZSH/oh-my-zsh.sh
