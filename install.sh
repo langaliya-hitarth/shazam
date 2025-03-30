@@ -676,7 +676,7 @@ fi
 . "$NVM_DIR/nvm.sh" >/dev/null 2>&1
 
 echo "Installing node..."
-nvm install --lts --silent
+nvm install latest
 echo "Node version $(node -v) installed"
 
 ### Set shell
