@@ -665,18 +665,14 @@ done
 # Install nvm
 # Create ~/.nvm directory if nvm is installed but the directory does not exist
 echo "Installing nvm..."
-export NVM_DIR="$HOME/.config/shazam2/.nvm"
-if [ ! -d "$NVM_DIR" ]; then
-    git clone -q https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-    cd "$NVM_DIR" || exit
-    git checkout -q "$(git describe --abbrev=0 --tags --match "v[0-9]*" "$(git rev-list --tags --max-count=1)")"
-fi
-
-# shellcheck source=./nvm.sh
-. "$NVM_DIR/nvm.sh" >/dev/null 2>&1
+export NVM_DIR="$HOME/.config/shazam2/.nvm" && (
+    git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+    cd "$NVM_DIR"
+    git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
+) && \. "$NVM_DIR/nvm.sh"
 
 echo "Installing node..."
-nvm install latest
+nvm install node --silent
 echo "Node version $(node -v) installed"
 
 ### Set shell
