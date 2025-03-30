@@ -641,8 +641,8 @@ if [ "$SHAZAM_SUDO" -gt 0 ]; then
 fi
 
 ### Configure macOS
-### Configure macOS
 if [ "$SHAZAM_ADMIN" -gt 0 ]; then
+    chmod +x "$HOME"/.config/shazam2/scripts/macSettings.sh
     "$HOME"/.config/shazam2/scripts/macSettings.sh
 else
     echo "Not admin. Skipping macos.sh. Set \$SHAZAM_ADMIN to run macos.sh."
@@ -658,6 +658,7 @@ fi
 ### Install VSCode extensions
 # TODO: Cursor extension installs not working
 for i in {code,code-exploration,code-insiders,code-server,codium}; do
+    chmod +x "$HOME"/.config/shazam2/scripts/vscode.sh
     "$HOME"/.config/shazam2/scripts/vscode.sh "$i"
 done
 
