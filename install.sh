@@ -314,13 +314,13 @@ symlink_zshrc() {
     local backup_file="$backup_dir/.zshrc-backup-$timestamp"
 
     # Backup existing .zshrc if it exists and is not a symlink
-    if [[ -f "$HOME_DIR/.zshrc" && ! -L "$HOME_DIR/.zshrc" ]]; then
-        cp "$HOME_DIR/.zshrc" "$backup_file"
+    if [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]]; then
+        cp "$HOME/.zshrc" "$backup_file"
         echo "-> Backed up existing .zshrc to $backup_file"
     fi
 
     # Symlink .zshrc
-    ln -nsfF "$DOT_DIR/.zshrc" "$HOME_DIR/.zshrc"
+    ln -nsfF "$DOT_DIR/dotfiles/zsh/.zshrc" "$HOME/.zshrc"
     echo "-> Symlinked .zshrc file"
 }
 
