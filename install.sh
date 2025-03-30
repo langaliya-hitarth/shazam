@@ -193,27 +193,27 @@ symlink_file() {
 symlink_repo_dotfiles() {
     echo "-> Symlinking dotfiles into Shazam's directory."
 
-    local dotfile
-    for dotfile in "$DOT_DIR"/.*; do
-        [[ -e "$dotfile" ]] || continue # Skip if file doesn't exist
+    # local dotfile
+    # for dotfile in "$DOT_DIR"/.*; do
+    #     [[ -e "$dotfile" ]] || continue # Skip if file doesn't exist
 
-        # Skip ignored patterns
-        local should_ignore=false
-        for pattern in "${IGNORE_PATTERNS[@]}"; do
-            if [[ "$dotfile" == *"$pattern" ]]; then
-                should_ignore=true
-                break
-            fi
-        done
+    #     # Skip ignored patterns
+    #     local should_ignore=false
+    #     for pattern in "${IGNORE_PATTERNS[@]}"; do
+    #         if [[ "$dotfile" == *"$pattern" ]]; then
+    #             should_ignore=true
+    #             break
+    #         fi
+    #     done
 
-        "$should_ignore" && continue
+    #     "$should_ignore" && continue
 
-        if [[ -d "$dotfile" ]]; then
-            symlink_dir_contents "$dotfile" "$DOT_DIR" "$HOME_DIR"
-        elif [[ -f "$dotfile" ]]; then
-            symlink_file "$dotfile" "$DOT_DIR" "$HOME_DIR"
-        fi
-    done
+    #     if [[ -d "$dotfile" ]]; then
+    #         symlink_dir_contents "$dotfile" "$DOT_DIR" "$HOME_DIR"
+    #     elif [[ -f "$dotfile" ]]; then
+    #         symlink_file "$dotfile" "$DOT_DIR" "$HOME_DIR"
+    #     fi
+    # done
 
     ln -nsfF "$DOT_DIR/Brewfile" "$HOME_DIR/.Brewfile"
 }
