@@ -424,10 +424,8 @@ log_no_sudo "Checking out $shazam_branch_name in $HOME/.config/shazam2."
 
 if symlink_repo_dotfiles; then
     echo "-> Symlinking successful. Finishing up..."
-    return 0
 else
     echo "-> Symlinking unsuccessful."
-    return 1
 fi
 
 # run_dotfile_scripts scripts/symlink.sh
@@ -596,10 +594,8 @@ fi
 # Symlink VSCode settings
 if symlink_vscode_settings; then
     echo "-> Symlinking VSCode settings successful. Finishing up..."
-    return 0
 else
     echo "-> Symlinking VSCode settings unsuccessful."
-    return 1
 fi
 
 ### Install VSCode extensions
