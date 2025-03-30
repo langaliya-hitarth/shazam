@@ -78,7 +78,7 @@ for i in "$@"; do
     if [ "$i" = "cursor" ]; then
       printf "\nHomebrew Cask should symlink %s to %s.\n" "$MACOS_BIN/code" "$i" >&2
     fi
-    exit 1
+    # exit 1
   elif install_extensions "$i"; then
     printf "\nSettings updated and extensions successfully installed for %s.\n" "$i"
   else
