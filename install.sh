@@ -406,13 +406,13 @@ check_software_updates() {
     fi
 }
 
-# if [ "$MACOS" -gt 0 ] && [ "$SHAZAM_ADMIN" -gt 0 ]; then
-#     install_xcode_clt
-#     check_xcode_license
-#     check_software_updates
-# else
-#     logskip "Xcode Command-Line Tools install and license check skipped."
-# fi
+if [ "$MACOS" -gt 0 ] && [ "$SHAZAM_ADMIN" -gt 0 ]; then
+    install_xcode_clt
+    check_xcode_license
+    check_software_updates
+else
+    logskip "Xcode Command-Line Tools install and license check skipped."
+fi
 
 configure_git() {
     logn_no_sudo "Configuring Git:"
@@ -461,7 +461,7 @@ configure_git() {
 }
 
 # The first call to `configure_git` is needed for cloning the dotfiles repo.
-# configure_git
+configure_git
 
 # Set up dotfiles
 # shellcheck disable=SC2086
@@ -492,8 +492,8 @@ fi
 # run_dotfile_scripts scripts/symlink.sh
 # The second call to `configure_git` is needed for CI use cases in which some
 # aspects of the `.gitconfig` cannot be used after cloning the dotfiles repo.
-# configure_git
-# logk
+configure_git
+logk
 
 install_homebrew() {
     log "Preparing Homebrew installation - Setting up directories and permissions..."
@@ -650,39 +650,39 @@ else
 fi
 
 ### Configure macOS
-# if [ "$SHAZAM_ADMIN" -gt 0 ]; then
-#     chmod +x "$HOME"/.config/shazam2/scripts/macSettings.sh
-#     "$HOME"/.config/shazam2/scripts/macSettings.sh
-# else
-#     echo "Not admin. Skipping macos.sh. Set \$SHAZAM_ADMIN to run macos.sh."
-# fi
+if [ "$SHAZAM_ADMIN" -gt 0 ]; then
+    chmod +x "$HOME"/.config/shazam2/scripts/macSettings.sh
+    "$HOME"/.config/shazam2/scripts/macSettings.sh
+else
+    echo "Not admin. Skipping macos.sh. Set \$SHAZAM_ADMIN to run macos.sh."
+fi
 
 # Symlink VSCode settings
-# if symlink_vscode_settings; then
-#     echo "-> Symlinking VSCode settings successful. Finishing up..."
-# else
-#     echo "-> Symlinking VSCode settings unsuccessful."
-# fi
+if symlink_vscode_settings; then
+    echo "-> Symlinking VSCode settings successful. Finishing up..."
+else
+    echo "-> Symlinking VSCode settings unsuccessful."
+fi
 
 ### Install VSCode extensions
 # TODO: Cursor extension installs not working
-# for i in {code,code-exploration,code-insiders,code-server,codium}; do
-#     chmod +x "$HOME"/.config/shazam2/scripts/vscode.sh
-#     "$HOME"/.config/shazam2/scripts/vscode.sh "$i"
-# done
+for i in {code,code-exploration,code-insiders,code-server,codium}; do
+    chmod +x "$HOME"/.config/shazam2/scripts/vscode.sh
+    "$HOME"/.config/shazam2/scripts/vscode.sh "$i"
+done
 
-# Install nvm
-# Create ~/.nvm directory if nvm is installed but the directory does not exist
-# echo "Installing nvm..."
-# export NVM_DIR="$HOME/.config/shazam2/.nvm" && (
-#     git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
-#     cd "$NVM_DIR"
-#     git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
-# ) && \. "$NVM_DIR/nvm.sh"
+Install nvm
+Create ~/.nvm directory if nvm is installed but the directory does not exist
+echo "Installing nvm..."
+export NVM_DIR="$HOME/.config/shazam2/.nvm" && (
+    git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+    cd "$NVM_DIR"
+    git checkout $(git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1))
+) && \. "$NVM_DIR/nvm.sh"
 
-# echo "Installing node..."
-# nvm install node --silent
-# echo "Node version $(node -v) installed"
+echo "Installing node..."
+nvm install node --silent
+echo "Node version $(node -v) installed"
 
 ### Set shell
 if [ "$SHAZAM_SUDO" -eq 0 ]; then
